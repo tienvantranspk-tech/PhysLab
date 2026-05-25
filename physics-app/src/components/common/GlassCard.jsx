@@ -12,9 +12,9 @@ import { fadeInUp, hoverLift } from '../../animations/variants';
  */
 
 const variantStyles = {
-  default: 'bg-white/90 backdrop-blur-md border border-white/50 shadow-lg',
-  frosted: 'bg-white/60 backdrop-blur-xl border border-white/30 shadow-xl',
-  solid: 'bg-white border-2 border-slate-100 shadow-sm',
+  default: 'bg-[#0F172A]/70 backdrop-blur-md border border-white/5 shadow-lg text-slate-100',
+  frosted: 'bg-[#1E293B]/50 backdrop-blur-xl border border-white/10 shadow-xl text-slate-100',
+  solid: 'bg-[#0F172A]/80 backdrop-blur-sm border-2 border-white/5 shadow-sm text-slate-100',
 };
 
 export default function GlassCard({

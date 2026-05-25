@@ -6,14 +6,14 @@ import { Volume2, VolumeX, Vibrate, Moon, Trash2, ChevronRight, Info } from 'luc
 
 function ToggleRow({ icon: Icon, label, value, onChange }) {
   return (
-    <div className="flex items-center justify-between py-3">
+    <div className="flex items-center justify-between py-3.5">
       <div className="flex items-center gap-3">
-        <Icon size={20} className="text-slate-500" />
-        <span className="font-bold text-slate-700 text-sm">{label}</span>
+        <Icon size={20} className="text-slate-400" />
+        <span className="font-extrabold text-slate-200 text-xs uppercase tracking-wider">{label}</span>
       </div>
       <button onClick={() => onChange(!value)}
-        className={`w-12 h-7 rounded-full transition-colors relative ${value ? 'bg-success' : 'bg-slate-300'}`}>
-        <div className={`w-5 h-5 bg-white rounded-full shadow-md absolute top-1 transition-all ${value ? 'left-6' : 'left-1'}`} />
+        className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${value ? 'bg-emerald-500' : 'bg-slate-700'}`}>
+        <div className={`w-4 h-4 bg-white rounded-full shadow-md absolute top-1 transition-all ${value ? 'left-7' : 'left-1'}`} />
       </button>
     </div>
   );
@@ -31,16 +31,16 @@ export default function SettingsScreen() {
   };
 
   return (
-    <div className="p-5 pb-8">
-      <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight mb-6">⚙️ Cài đặt</h1>
+    <div className="p-5 pb-24 bg-[#0B1120] text-slate-100 min-h-screen">
+      <h1 className="text-2xl font-extrabold text-white tracking-tight mb-6">⚙️ Cài đặt</h1>
 
       {/* Grade */}
-      <GlassCard variant="solid" className="mb-4">
-        <h3 className="font-extrabold text-slate-700 text-sm mb-3">Lớp học</h3>
-        <div className="grid grid-cols-4 gap-2">
+      <GlassCard variant="default" className="mb-5 border-white/5 bg-[#0F172A]/70 shadow-xl">
+        <h3 className="font-extrabold text-slate-400 text-[10px] uppercase tracking-widest mb-4">Lớp học hiện tại</h3>
+        <div className="grid grid-cols-4 gap-2.5">
           {[6,7,8,9].map(g => (
             <button key={g} onClick={() => setGrade(g)}
-              className={`py-2.5 rounded-xl font-extrabold text-sm border-2 transition-all ${grade===g?'bg-primary text-white border-primary':'bg-slate-50 text-slate-500 border-slate-200 hover:border-primary/30'}`}>
+              className={`py-3 rounded-2xl font-extrabold text-xs transition-all border cursor-pointer ${grade===g?'bg-primary text-black border-primary shadow-lg shadow-primary/20':'bg-white/5 text-slate-400 border-white/5 hover:bg-white/10'}`}>
               Lớp {g}
             </button>
           ))}
@@ -48,27 +48,27 @@ export default function SettingsScreen() {
       </GlassCard>
 
       {/* Toggles */}
-      <GlassCard variant="solid" className="mb-4">
+      <GlassCard variant="default" className="mb-5 border-white/5 bg-[#0F172A]/70 shadow-xl">
         <ToggleRow icon={soundEnabled ? Volume2 : VolumeX} label="Âm thanh" value={soundEnabled} onChange={setSoundEnabled} />
-        <div className="border-t border-slate-100" />
+        <div className="border-t border-white/5" />
         <ToggleRow icon={Vibrate} label="Rung phản hồi" value={hapticEnabled} onChange={setHapticEnabled} />
-        <div className="border-t border-slate-100" />
-        <ToggleRow icon={Moon} label="Chế độ tối" value={false} onChange={() => {}} />
+        <div className="border-t border-white/5" />
+        <ToggleRow icon={Moon} label="Chế độ tối" value={true} onChange={() => {}} />
       </GlassCard>
 
       {/* App Info */}
-      <GlassCard variant="solid" className="mb-4">
+      <GlassCard variant="default" className="mb-6 border-white/5 bg-[#0F172A]/70 shadow-xl">
         <div className="flex items-center gap-3 py-1">
-          <Info size={20} className="text-slate-500" />
+          <Info size={20} className="text-slate-400" />
           <div className="flex-1">
-            <span className="font-bold text-slate-700 text-sm">Phiên bản</span>
+            <span className="font-extrabold text-slate-200 text-xs uppercase tracking-wider">Phiên bản</span>
           </div>
-          <span className="text-sm font-semibold text-slate-400">1.0.0 Beta</span>
+          <span className="text-xs font-bold text-slate-500 bg-white/5 px-2.5 py-1 rounded-xl">1.0.0 Beta</span>
         </div>
       </GlassCard>
 
       {/* Reset */}
-      <ChunkyButton variant="danger" size="md" fullWidth icon="🗑️" onClick={handleReset}>
+      <ChunkyButton variant="danger" size="md" fullWidth icon="🗑️" onClick={handleReset} className="shadow-lg shadow-danger-shadow/20">
         XÓA TIẾN TRÌNH
       </ChunkyButton>
     </div>

@@ -21,54 +21,54 @@ export default function MissionsScreen() {
   });
 
   return (
-    <div className="p-5 pb-8">
+    <div className="p-5 pb-24 bg-[#0B1120] text-slate-100 min-h-screen">
       <div className="mb-6">
-        <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">🎯 Nhiệm vụ</h1>
-        <p className="text-slate-500 font-semibold text-sm mt-1">Hoàn thành nhiệm vụ để nhận thưởng!</p>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">🎯 Nhiệm vụ</h1>
+        <p className="text-slate-400 font-semibold text-xs mt-1">Hoàn thành nhiệm vụ nhận ngay năng lượng!</p>
       </div>
 
-      <GlassCard variant="solid" className="mb-5">
+      <GlassCard variant="default" className="mb-6 border-white/5 bg-[#0F172A]/70 backdrop-blur-sm shadow-xl">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <Calendar size={20} className="text-primary" />
-            <span className="font-extrabold text-slate-800">Chuỗi ngày học</span>
+            <Calendar size={18} className="text-amber-500" />
+            <span className="font-extrabold text-sm text-slate-200">Chuỗi ngày học</span>
           </div>
-          <div className="bg-orange-50 text-orange-600 px-3 py-1 rounded-xl font-extrabold text-sm border border-orange-200">
+          <div className="bg-amber-500/10 text-amber-400 px-3 py-1 rounded-xl font-extrabold text-xs border border-amber-500/20">
             🔥 {streak} ngày
           </div>
         </div>
-        <div className="flex justify-between gap-1">
+        <div className="flex justify-between gap-1 overflow-x-auto py-1">
           {cal.map((c,i) => (
-            <div key={i} className="flex flex-col items-center gap-1.5">
-              <span className="text-[10px] font-bold text-slate-400">{c.label}</span>
+            <div key={i} className="flex flex-col items-center gap-1.5 shrink-0 min-w-[40px]">
+              <span className="text-[10px] font-bold text-slate-500">{c.label}</span>
               <motion.div initial={{scale:0}} animate={{scale:1}} transition={{delay:i*0.05,type:'spring',stiffness:400,damping:15}}
-                className={`w-10 h-10 rounded-xl flex items-center justify-center font-extrabold text-sm ${c.isToday?'bg-primary text-white ring-2 ring-primary/30 ring-offset-2':c.done?'bg-success/10 text-success border-2 border-success/30':'bg-slate-100 text-slate-400 border-2 border-slate-200'}`}>
-                {c.done && !c.isToday ? <CheckCircle size={18}/> : c.day}
+                className={`w-9 h-9 rounded-xl flex items-center justify-center font-extrabold text-xs ${c.isToday?'bg-amber-500 text-black shadow-md ring-2 ring-amber-500/30':c.done?'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30':'bg-white/5 text-slate-500 border border-white/5'}`}>
+                {c.done && !c.isToday ? <CheckCircle size={16}/> : c.day}
               </motion.div>
             </div>
           ))}
         </div>
       </GlassCard>
 
-      <h2 className="font-extrabold text-slate-700 text-lg mb-3 flex items-center gap-2">
-        <Gift size={20} className="text-action" /> Nhiệm vụ hàng ngày
+      <h2 className="font-extrabold text-slate-300 text-sm mb-4 flex items-center gap-2 uppercase tracking-widest">
+        <Gift size={18} className="text-sky-400" /> Nhiệm vụ hàng ngày
       </h2>
-      <motion.div variants={staggerContainer} initial="initial" animate="animate" className="flex flex-col gap-3 mb-5">
+      <motion.div variants={staggerContainer} initial="initial" animate="animate" className="flex flex-col gap-3 mb-6">
         {mockQuests.map(q => {
           const done = q.progress >= q.target;
           return (
             <motion.div key={q.id} variants={staggerItem}>
-              <GlassCard variant="solid" className={done?'border-success/30 bg-green-50/50':''}>
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">{q.icon}</span>
-                  <div className="flex-1">
+              <GlassCard variant="default" className={`border-white/5 bg-[#0F172A]/70 ${done ? 'border-emerald-500/20 bg-emerald-500/5' : ''}`}>
+                <div className="flex items-center gap-4">
+                  <span className="text-2xl shrink-0">{q.icon}</span>
+                  <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between mb-1.5">
-                      <span className={`font-bold text-sm ${done?'text-success line-through':'text-slate-700'}`}>{q.title}</span>
-                      <span className="text-xs font-extrabold text-slate-400">{q.progress}/{q.target}</span>
+                      <span className={`font-bold text-xs truncate ${done?'text-emerald-400 line-through':'text-slate-200'}`}>{q.title}</span>
+                      <span className="text-[10px] font-extrabold text-slate-500">{q.progress}/{q.target}</span>
                     </div>
                     <AnimatedProgressBar progress={(q.progress/q.target)*100} size="sm" color={done?'success':'action'} shimmer={!done} />
                   </div>
-                  <div className="bg-slate-100 text-slate-400 px-3 py-1.5 rounded-xl text-xs font-extrabold">+{q.reward}💎</div>
+                  <div className="bg-white/5 text-slate-400 border border-white/5 px-2.5 py-1.5 rounded-xl text-[10px] font-extrabold shrink-0">+{q.reward}💎</div>
                 </div>
               </GlassCard>
             </motion.div>
@@ -76,12 +76,12 @@ export default function MissionsScreen() {
         })}
       </motion.div>
 
-      <GlassCard variant="solid" className="border-2 border-purple-200 bg-gradient-to-br from-purple-50 to-violet-50">
-        <div className="flex items-start gap-3">
-          <div className="w-14 h-14 bg-gradient-to-br from-purple-400 to-violet-500 rounded-2xl flex items-center justify-center text-2xl shadow-md shrink-0">🏆</div>
-          <div className="flex-1">
-            <h3 className="font-extrabold text-purple-800 text-base mb-1">Thử thách tuần</h3>
-            <p className="text-purple-600 font-semibold text-sm mb-3">Hoàn thành 5 bài học tuần này → 200 XP + 50 💎</p>
+      <GlassCard variant="default" className="border-purple-500/20 bg-gradient-to-br from-purple-500/5 to-violet-500/5 shadow-xl">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-violet-600 rounded-2xl flex items-center justify-center text-xl shadow-md shrink-0">🏆</div>
+          <div className="flex-1 min-w-0">
+            <h3 className="font-extrabold text-purple-300 text-sm mb-1 truncate">Thử thách tuần</h3>
+            <p className="text-purple-400 font-semibold text-xs mb-3">Hoàn thành 5 bài học tuần này → 200 XP + 50 💎</p>
             <AnimatedProgressBar progress={40} size="sm" color="primary" showLabel />
           </div>
         </div>

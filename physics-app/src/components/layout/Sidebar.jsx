@@ -18,15 +18,15 @@ export default function Sidebar() {
   const location = useLocation();
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 bg-white border-r-2 border-slate-100 h-screen sticky top-0 shrink-0">
+    <aside className="hidden lg:flex flex-col w-64 bg-[#0F172A] border-r border-white/5 h-screen sticky top-0 shrink-0">
       {/* Logo */}
-      <div className="p-6 pb-4 border-b border-slate-100">
+      <div className="p-6 pb-4 border-b border-white/5">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-gradient-to-br from-primary to-amber-400 rounded-2xl flex items-center justify-center text-xl shadow-md">
             ⚡
           </div>
           <div>
-            <h1 className="font-extrabold text-slate-800 text-lg tracking-tight">PhysLab</h1>
+            <h1 className="font-extrabold text-slate-100 text-lg tracking-tight">PhysLab</h1>
             <p className="text-[11px] font-bold text-slate-400 -mt-0.5">Vật lý vui nhộn</p>
           </div>
         </div>
@@ -45,8 +45,8 @@ export default function Sidebar() {
               className={`
                 flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all duration-200 relative
                 ${isActive
-                  ? 'bg-primary/10 text-primary'
-                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700'
+                  ? 'bg-primary/20 text-primary'
+                  : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'
                 }
               `}
             >
@@ -65,12 +65,12 @@ export default function Sidebar() {
       </nav>
 
       {/* Bottom: Settings */}
-      <div className="p-4 border-t border-slate-100">
+      <div className="p-4 border-t border-white/5">
         <NavLink
           to="/settings"
           className={({ isActive }) => `
             flex items-center gap-3 px-4 py-3 rounded-2xl font-bold text-sm transition-all duration-200
-            ${isActive ? 'bg-slate-100 text-slate-700' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'}
+            ${isActive ? 'bg-white/10 text-slate-200' : 'text-slate-400 hover:bg-white/5 hover:text-slate-200'}
           `}
         >
           <Settings size={20} />
