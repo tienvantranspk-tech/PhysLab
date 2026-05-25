@@ -1,0 +1,359 @@
+{
+  "lessons": [
+    {
+      "id": "elec_01",
+      "title": "Điện tích là gì?",
+      "topic": "electricity",
+      "grade": 7,
+      "order": 1,
+      "xpReward": 40,
+      "description": "Tìm hiểu về điện tích dương và âm — nền tảng của mọi hiện tượng điện!",
+      "thumbnail": "⚛️",
+      "simulation": {
+        "type": "intro_charge",
+        "components": [],
+        "successCondition": "watch_animation"
+      },
+      "quiz": [
+        {
+          "question": "Có mấy loại điện tích?",
+          "options": ["1 loại", "2 loại", "3 loại", "Vô số"],
+          "correctIndex": 1,
+          "explanation": "Có 2 loại điện tích: dương (+) và âm (-). Các điện tích cùng dấu đẩy nhau, khác dấu hút nhau."
+        }
+      ],
+      "prerequisites": [],
+      "unlocks": ["elec_02"]
+    },
+    {
+      "id": "elec_02",
+      "title": "Dòng điện",
+      "topic": "electricity",
+      "grade": 7,
+      "order": 2,
+      "xpReward": 40,
+      "description": "Dòng điện là gì và nó chạy như thế nào trong dây dẫn?",
+      "thumbnail": "⚡",
+      "simulation": {
+        "type": "current_flow",
+        "components": [],
+        "successCondition": "watch_animation"
+      },
+      "quiz": [
+        {
+          "question": "Dòng điện là dòng chuyển dời có hướng của:",
+          "options": ["Nước", "Các hạt mang điện", "Không khí", "Ánh sáng"],
+          "correctIndex": 1,
+          "explanation": "Dòng điện là dòng chuyển dời có hướng của các hạt mang điện (electron trong kim loại)."
+        }
+      ],
+      "prerequisites": ["elec_01"],
+      "unlocks": ["elec_03"]
+    },
+    {
+      "id": "elec_03",
+      "title": "Mạch điện đơn giản",
+      "topic": "electricity",
+      "grade": 7,
+      "order": 3,
+      "xpReward": 50,
+      "description": "Lắp ráp mạch điện đầu tiên của em — pin, dây, đèn và công tắc!",
+      "thumbnail": "💡",
+      "simulation": {
+        "type": "simple_circuit",
+        "components": ["battery", "bulb", "switch", "wire"],
+        "successCondition": "circuit_closed_and_light_on"
+      },
+      "quiz": [
+        {
+          "question": "Điều gì xảy ra khi mở công tắc (ngắt mạch)?",
+          "options": ["Đèn sáng mạnh hơn", "Đèn tắt vì mạch bị hở", "Dòng điện chạy nhanh hơn"],
+          "correctIndex": 1,
+          "explanation": "Khi công tắc mở, mạch bị hở, dòng điện không thể chạy qua nên đèn tắt."
+        }
+      ],
+      "prerequisites": ["elec_02"],
+      "unlocks": ["elec_04"]
+    },
+    {
+      "id": "elec_04",
+      "title": "Định luật Ohm",
+      "topic": "electricity",
+      "grade": 9,
+      "order": 4,
+      "xpReward": 60,
+      "description": "Khám phá mối quan hệ giữa điện áp, cường độ dòng điện và điện trở!",
+      "thumbnail": "📊",
+      "simulation": {
+        "type": "ohm_law",
+        "components": ["battery", "resistor", "ammeter", "voltmeter"],
+        "successCondition": "observe_vi_graph"
+      },
+      "quiz": [
+        {
+          "question": "Theo Định luật Ohm, khi tăng điện áp gấp đôi thì cường độ dòng điện:",
+          "options": ["Giảm một nửa", "Giữ nguyên", "Tăng gấp đôi", "Tăng gấp bốn"],
+          "correctIndex": 2,
+          "explanation": "I = U/R. Khi U tăng gấp đôi mà R không đổi thì I cũng tăng gấp đôi."
+        }
+      ],
+      "prerequisites": ["elec_03"],
+      "unlocks": ["elec_05"]
+    },
+    {
+      "id": "elec_05",
+      "title": "Mạch nối tiếp",
+      "topic": "electricity",
+      "grade": 7,
+      "order": 5,
+      "xpReward": 50,
+      "description": "Mắc hai bóng đèn nối tiếp và quan sát độ sáng thay đổi!",
+      "thumbnail": "🔗",
+      "simulation": {
+        "type": "series_circuit",
+        "components": ["battery", "bulb_1", "bulb_2", "wire"],
+        "successCondition": "observe_brightness"
+      },
+      "quiz": [
+        {
+          "question": "Trong mạch nối tiếp, nếu 1 bóng đèn cháy thì:",
+          "options": ["Bóng còn lại vẫn sáng", "Cả 2 đều tắt", "Bóng còn lại sáng hơn"],
+          "correctIndex": 1,
+          "explanation": "Trong mạch nối tiếp, dòng điện chỉ có một đường đi. Nếu 1 đèn cháy, mạch bị hở, cả 2 đều tắt."
+        }
+      ],
+      "prerequisites": ["elec_04"],
+      "unlocks": ["elec_06"]
+    },
+    {
+      "id": "elec_06",
+      "title": "Mạch song song",
+      "topic": "electricity",
+      "grade": 7,
+      "order": 6,
+      "xpReward": 50,
+      "description": "So sánh mạch song song với nối tiếp — đèn nào sáng hơn?",
+      "thumbnail": "🔀",
+      "simulation": {
+        "type": "parallel_circuit",
+        "components": ["battery", "bulb_1", "bulb_2", "wire"],
+        "successCondition": "compare_brightness"
+      },
+      "quiz": [
+        {
+          "question": "Trong mạch song song, nếu 1 bóng đèn cháy thì:",
+          "options": ["Cả 2 đều tắt", "Bóng còn lại vẫn sáng", "Pin bị hư"],
+          "correctIndex": 1,
+          "explanation": "Trong mạch song song, mỗi đèn có đường đi riêng. Nếu 1 đèn cháy, đèn kia vẫn sáng bình thường."
+        }
+      ],
+      "prerequisites": ["elec_05"],
+      "unlocks": ["elec_07"]
+    },
+    {
+      "id": "elec_07",
+      "title": "An toàn điện",
+      "topic": "electricity",
+      "grade": 7,
+      "order": 7,
+      "xpReward": 40,
+      "description": "Học cách sử dụng điện an toàn và tránh tai nạn ngắn mạch!",
+      "thumbnail": "🛡️",
+      "simulation": {
+        "type": "short_circuit",
+        "components": ["battery", "wire"],
+        "successCondition": "trigger_short_circuit_warning"
+      },
+      "quiz": [
+        {
+          "question": "Ngắn mạch xảy ra khi:",
+          "options": ["Dây dẫn quá dài", "Hai cực pin nối trực tiếp không qua tải", "Mạch có quá nhiều đèn"],
+          "correctIndex": 1,
+          "explanation": "Ngắn mạch xảy ra khi dòng điện đi thẳng từ cực này sang cực kia mà không qua thiết bị tiêu thụ nào, rất nguy hiểm!"
+        }
+      ],
+      "prerequisites": ["elec_06"],
+      "unlocks": []
+    },
+    {
+      "id": "mech_01",
+      "title": "Rơi tự do",
+      "topic": "mechanics",
+      "grade": 8,
+      "order": 1,
+      "xpReward": 50,
+      "description": "Thả một vật từ trên cao và đo thời gian rơi — trọng lực hoạt động thế nào?",
+      "thumbnail": "🍎",
+      "simulation": {
+        "type": "free_fall",
+        "components": ["ball", "ruler"],
+        "successCondition": "measure_fall_time"
+      },
+      "quiz": [
+        {
+          "question": "Trong rơi tự do, vận tốc của vật:",
+          "options": ["Giảm dần", "Không đổi", "Tăng đều", "Tăng rồi giảm"],
+          "correctIndex": 2,
+          "explanation": "Trong rơi tự do, vật chịu gia tốc trọng trường g ≈ 9.8 m/s², nên vận tốc tăng đều theo thời gian."
+        }
+      ],
+      "prerequisites": [],
+      "unlocks": ["mech_02"]
+    },
+    {
+      "id": "mech_02",
+      "title": "Con lắc đơn",
+      "topic": "mechanics",
+      "grade": 9,
+      "order": 2,
+      "xpReward": 60,
+      "description": "Thay đổi chiều dài dây và quan sát chu kỳ dao động thay đổi!",
+      "thumbnail": "🕰️",
+      "simulation": {
+        "type": "pendulum",
+        "components": ["pendulum", "ruler"],
+        "successCondition": "observe_period_change"
+      },
+      "quiz": [
+        {
+          "question": "Muốn con lắc dao động chậm hơn, ta cần:",
+          "options": ["Tăng khối lượng", "Giảm chiều dài dây", "Tăng chiều dài dây", "Đẩy mạnh hơn"],
+          "correctIndex": 2,
+          "explanation": "Chu kỳ T = 2π√(l/g). Khi tăng chiều dài dây l, chu kỳ T tăng → con lắc dao động chậm hơn."
+        }
+      ],
+      "prerequisites": ["mech_01"],
+      "unlocks": ["mech_03"]
+    },
+    {
+      "id": "mech_03",
+      "title": "Mặt phẳng nghiêng",
+      "topic": "mechanics",
+      "grade": 8,
+      "order": 3,
+      "xpReward": 50,
+      "description": "Quan sát vật trượt trên mặt phẳng nghiêng — thay đổi góc nghiêng xem sao!",
+      "thumbnail": "📐",
+      "simulation": {
+        "type": "inclined_plane",
+        "components": ["block", "incline"],
+        "successCondition": "observe_acceleration"
+      },
+      "quiz": [
+        {
+          "question": "Khi tăng góc nghiêng, vật sẽ:",
+          "options": ["Trượt chậm hơn", "Trượt nhanh hơn", "Đứng yên", "Bay lên"],
+          "correctIndex": 1,
+          "explanation": "Góc nghiêng càng lớn, thành phần trọng lực kéo vật xuống càng mạnh, vật trượt nhanh hơn."
+        }
+      ],
+      "prerequisites": ["mech_02"],
+      "unlocks": ["mech_04"]
+    },
+    {
+      "id": "mech_04",
+      "title": "Định luật Newton",
+      "topic": "mechanics",
+      "grade": 8,
+      "order": 4,
+      "xpReward": 60,
+      "description": "F = m×a — Khám phá 3 định luật Newton qua thí nghiệm ảo!",
+      "thumbnail": "🚀",
+      "simulation": {
+        "type": "newton_laws",
+        "components": ["cart", "force_arrow"],
+        "successCondition": "observe_fma"
+      },
+      "quiz": [
+        {
+          "question": "Nếu lực tác dụng không đổi mà khối lượng tăng gấp đôi thì gia tốc:",
+          "options": ["Tăng gấp đôi", "Giảm một nửa", "Không đổi", "Bằng 0"],
+          "correctIndex": 1,
+          "explanation": "a = F/m. Khi m tăng gấp đôi mà F không đổi, gia tốc a giảm còn một nửa."
+        }
+      ],
+      "prerequisites": ["mech_03"],
+      "unlocks": []
+    },
+    {
+      "id": "optic_01",
+      "title": "Gương phẳng",
+      "topic": "optics",
+      "grade": 7,
+      "order": 1,
+      "xpReward": 45,
+      "description": "Tia sáng phản xạ trên gương phẳng — góc tới bằng góc phản xạ!",
+      "thumbnail": "🪞",
+      "simulation": {
+        "type": "mirror_reflection",
+        "components": ["mirror", "light_source"],
+        "successCondition": "observe_reflection_law"
+      },
+      "quiz": [
+        {
+          "question": "Định luật phản xạ ánh sáng nói rằng:",
+          "options": ["Góc tới lớn hơn góc phản xạ", "Góc tới bằng góc phản xạ", "Góc tới nhỏ hơn góc phản xạ"],
+          "correctIndex": 1,
+          "explanation": "Định luật phản xạ ánh sáng: Góc phản xạ luôn bằng góc tới."
+        }
+      ],
+      "prerequisites": [],
+      "unlocks": ["optic_02"]
+    },
+    {
+      "id": "optic_02",
+      "title": "Thấu kính hội tụ",
+      "topic": "optics",
+      "grade": 9,
+      "order": 2,
+      "xpReward": 60,
+      "description": "Tia sáng đi qua thấu kính hội tụ — tìm tiêu điểm!",
+      "thumbnail": "🔍",
+      "simulation": {
+        "type": "lens_refraction",
+        "components": ["lens", "light_source"],
+        "successCondition": "find_focal_point"
+      },
+      "quiz": [
+        {
+          "question": "Thấu kính hội tụ có đặc điểm:",
+          "options": ["Phần rìa dày hơn phần giữa", "Phần giữa dày hơn phần rìa", "Đều nhau"],
+          "correctIndex": 1,
+          "explanation": "Thấu kính hội tụ có phần giữa dày hơn phần rìa, giúp tập trung tia sáng vào một điểm (tiêu điểm)."
+        }
+      ],
+      "prerequisites": ["optic_01"],
+      "unlocks": ["optic_03"]
+    },
+    {
+      "id": "optic_03",
+      "title": "Lăng kính tán sắc",
+      "topic": "optics",
+      "grade": 9,
+      "order": 3,
+      "xpReward": 60,
+      "description": "Ánh sáng trắng qua lăng kính tách thành 7 màu cầu vồng!",
+      "thumbnail": "🌈",
+      "simulation": {
+        "type": "prism_dispersion",
+        "components": ["prism", "white_light"],
+        "successCondition": "observe_rainbow"
+      },
+      "quiz": [
+        {
+          "question": "Ánh sáng trắng là:",
+          "options": ["Một màu duy nhất", "Hỗn hợp nhiều ánh sáng màu", "Không có màu"],
+          "correctIndex": 1,
+          "explanation": "Ánh sáng trắng là hỗn hợp của nhiều ánh sáng màu (đỏ, cam, vàng, lục, lam, chàm, tím). Lăng kính giúp tách chúng ra."
+        }
+      ],
+      "prerequisites": ["optic_02"],
+      "unlocks": []
+    }
+  ],
+  "topics": [
+    { "id": "electricity", "name": "Điện học", "icon": "⚡", "color": "#F59E0B", "grades": [7, 9] },
+    { "id": "mechanics", "name": "Cơ học", "icon": "🔧", "color": "#38BDF8", "grades": [8, 9] },
+    { "id": "optics", "name": "Quang học", "icon": "🔬", "color": "#A855F7", "grades": [7, 9] }
+  ]
+}
