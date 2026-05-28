@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, RotateCcw, Volume2, VolumeX, Play, Pause } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowLeft, RotateCcw, Volume2, VolumeX, Play, Pause, BookOpen } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 import LabQuizChallenge from '../components/LabQuizChallenge';
+import TheoryCardModal from '../components/TheoryCardModal';
 
 /* ════════════════════════════════════════════
    WaveLab — Interactive Sound Waves Lab
@@ -33,10 +34,14 @@ function WaveCanvas({ frequency, amplitude, medium, isPlaying }) {
       ctx.strokeStyle = 'rgba(148,163,184,0.1)';
       ctx.lineWidth = 0.5;
       for (let y = 0; y < h; y += 30) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); stroke();
       }
       for (let x = 0; x < w; x += 30) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); stroke();
+      }
+
+      function stroke() {
+        ctx.stroke();
       }
 
       // Center line
@@ -119,19 +124,83 @@ function WaveCanvas({ frequency, amplitude, medium, isPlaying }) {
 
 export default function WaveLab() {
   const navigate = useNavigate();
-  const { addXp, completeLesson } = useUser();
+  const { addXp, completeLesson, soundEnabled } = useUser();
 
   const [frequency, setFrequency] = useState(3);
   const [amplitude, setAmplitude] = useState(0.6);
   const [medium, setMedium] = useState('air');
   const [isPlaying, setIsPlaying] = useState(true);
-  const [showQuiz, setShowQuiz] = useState(false);
+  const [showTheory, setShowTheory] = useState(true);
+
+  // Web Audio API refs for interactive sound wave generation
+  const audioCtxRef = useRef(null);
+  const oscillatorRef = useRef(null);
+  const gainNodeRef = useRef(null);
 
   const mediumInfo = {
     air: { label: 'Không khí', speed: '343 m/s', icon: '💨', color: 'from-sky-500 to-blue-500' },
     water: { label: 'Nước', speed: '1,480 m/s', icon: '💧', color: 'from-cyan-500 to-teal-500' },
     steel: { label: 'Thép', speed: '5,120 m/s', icon: '🔩', color: 'from-amber-500 to-orange-500' },
   };
+
+  // Play real-time sine wave through Web Audio API
+  useEffect(() => {
+    if (!isPlaying || !soundEnabled) {
+      if (oscillatorRef.current) {
+        try { oscillatorRef.current.stop(); } catch (e) {}
+        oscillatorRef.current.disconnect();
+        oscillatorRef.current = null;
+      }
+      return;
+    }
+
+    try {
+      if (!audioCtxRef.current) {
+        audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      const ctx = audioCtxRef.current;
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+
+      if (!gainNodeRef.current) {
+        gainNodeRef.current = ctx.createGain();
+        gainNodeRef.current.connect(ctx.destination);
+      }
+
+      if (!oscillatorRef.current) {
+        const osc = ctx.createOscillator();
+        osc.type = 'sine';
+        osc.connect(gainNodeRef.current);
+        osc.start();
+        oscillatorRef.current = osc;
+      }
+
+      // Map frequency slider (1 to 10) to actual audible pitch (220 Hz to 880 Hz - A3 to A5)
+      const targetFreq = 220 + (frequency - 1) * 73.3;
+      oscillatorRef.current.frequency.setValueAtTime(targetFreq, ctx.currentTime);
+
+      // Map amplitude slider (0.05 to 1) to gain volume (max 0.12 to prevent clipping/loudness)
+      const targetVolume = amplitude * 0.12;
+      gainNodeRef.current.gain.setValueAtTime(targetVolume, ctx.currentTime);
+
+    } catch (err) {
+      console.warn("Web Audio API not supported or autoplay blocked:", err);
+    }
+  }, [frequency, amplitude, isPlaying, soundEnabled]);
+
+  // Clean up audio on unmount
+  useEffect(() => {
+    return () => {
+      if (oscillatorRef.current) {
+        try { oscillatorRef.current.stop(); } catch (e) {}
+        oscillatorRef.current.disconnect();
+      }
+      if (audioCtxRef.current) {
+        audioCtxRef.current.close();
+      }
+    };
+  }, []);
 
   const resetLab = useCallback(() => {
     setFrequency(3);
@@ -140,22 +209,25 @@ export default function WaveLab() {
     setIsPlaying(true);
   }, []);
 
-  const handleComplete = useCallback((lessonId) => {
-    addXp(45);
-    completeLesson(lessonId, null);
-    navigate('/');
-  }, [addXp, completeLesson, navigate]);
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0B1120] via-[#0F172A] to-[#0B1120] text-white">
       {/* Header */}
       <header className="sticky top-0 z-30 flex items-center justify-between px-4 py-3 bg-[#0F172A]/90 backdrop-blur-md border-b border-white/10">
-        <button onClick={() => navigate('/')} className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
-          <ArrowLeft size={20} />
-          <span className="font-bold text-sm hidden sm:inline">Quay lại</span>
-        </button>
+        <div className="flex items-center gap-4">
+          <button onClick={() => navigate('/')} className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
+            <ArrowLeft size={20} />
+            <span className="font-bold text-sm hidden sm:inline">Quay lại</span>
+          </button>
+          <button
+            onClick={() => setShowTheory(true)}
+            className="flex items-center gap-1 px-2.5 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-bold text-cyan-400 tracking-wide transition-all"
+          >
+            <BookOpen size={13} />
+            <span>Xem Lý thuyết</span>
+          </button>
+        </div>
         <div className="flex items-center gap-2">
-          <Volume2 size={20} className="text-cyan-400" />
+          <Volume2 size={20} className={`text-cyan-400 ${isPlaying && soundEnabled ? 'animate-pulse' : 'opacity-40'}`} />
           <h1 className="font-extrabold text-base tracking-tight">Phòng thí nghiệm Sóng âm</h1>
         </div>
         <button onClick={resetLab} className="flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors">
@@ -185,8 +257,8 @@ export default function WaveLab() {
               onClick={() => setIsPlaying(!isPlaying)}
               className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-extrabold text-sm shadow-lg transition-all ${
                 isPlaying
-                  ? 'bg-gradient-to-r from-red-500 to-rose-600 text-white'
-                  : 'bg-gradient-to-r from-emerald-500 to-green-600 text-white'
+                  ? 'bg-gradient-to-r from-red-500 to-rose-600 text-white shadow-red-500/10'
+                  : 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-emerald-500/10'
               }`}
             >
               {isPlaying ? <><Pause size={16} /> Tạm dừng</> : <><Play size={16} /> Phát sóng</>}
@@ -199,7 +271,7 @@ export default function WaveLab() {
           {/* Frequency */}
           <div className="bg-[#1E293B]/40 border border-white/10 rounded-2xl p-5">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-sm font-extrabold text-amber-400">🎵 Tần số</span>
+              <span className="text-sm font-extrabold text-amber-400">🎵 Tần số âm</span>
               <span className="text-lg font-black text-amber-300">{frequency} Hz</span>
             </div>
             <input
@@ -216,7 +288,7 @@ export default function WaveLab() {
           {/* Amplitude */}
           <div className="bg-[#1E293B]/40 border border-white/10 rounded-2xl p-5">
             <div className="flex justify-between items-center mb-3">
-              <span className="text-sm font-extrabold text-pink-400">📢 Biên độ</span>
+              <span className="text-sm font-extrabold text-pink-400">📢 Biên độ âm</span>
               <span className="text-lg font-black text-pink-300">{(amplitude * 100).toFixed(0)}%</span>
             </div>
             <input
@@ -290,9 +362,15 @@ export default function WaveLab() {
             ))}
           </div>
         </div>
+      </div>
 
       {/* Floating Quiz Challenge Component */}
       <LabQuizChallenge labId="wave" />
+
+      {/* Theory Card Modal */}
+      {showTheory && (
+        <TheoryCardModal labId="wave" onClose={() => setShowTheory(false)} />
+      )}
     </div>
   );
 }

@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, RotateCcw, Thermometer, Flame, Snowflake, Droplets, Beaker, Play, Pause } from 'lucide-react';
+import { ArrowLeft, RotateCcw, Thermometer, Flame, Snowflake, Droplets, Beaker, Play, Pause, BookOpen } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 import LabQuizChallenge from '../components/LabQuizChallenge';
+import TheoryCardModal from '../components/TheoryCardModal';
 
 /* ════════════════════════════════════════════
    ThermoLab — Interactive Thermodynamics Lab
@@ -162,9 +163,9 @@ function BeakerVisual({ temperature, label, color, isHeating, isCooling }) {
 
 export default function ThermoLab() {
   const navigate = useNavigate();
-  const { addXp, completeLesson } = useUser();
+  const { addXp, completeLesson, soundEnabled } = useUser();
   const [mode, setMode] = useState('thermometer'); // 'thermometer' | 'equilibrium'
-  const [showQuiz, setShowQuiz] = useState(false);
+  const [showTheory, setShowTheory] = useState(true);
 
   // Thermometer mode state
   const [envTemp, setEnvTemp] = useState(25);
@@ -177,6 +178,79 @@ export default function ThermoLab() {
   const animRef = useRef(null);
   const hotRef = useRef(90);
   const coldRef = useRef(10);
+
+  // Audio nodes for boiling water synthetic sound effect
+  const audioCtxRef = useRef(null);
+  const bubbleIntervalRef = useRef(null);
+
+  // Sound generator: synthesized realistic boiling water bubbles
+  useEffect(() => {
+    // Only synthesize bubble noises if the beaker is extremely hot (> 80°C) OR during hot water equilibrium simulation
+    const needsBoilingSound = (mode === 'equilibrium' && isSimulating && hotTemp > 50) || (mode === 'thermometer' && envTemp > 80);
+
+    if (!needsBoilingSound || !soundEnabled) {
+      if (bubbleIntervalRef.current) {
+        clearInterval(bubbleIntervalRef.current);
+        bubbleIntervalRef.current = null;
+      }
+      return;
+    }
+
+    try {
+      if (!audioCtxRef.current) {
+        audioCtxRef.current = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      const ctx = audioCtxRef.current;
+
+      // loop to synthesize bubble sound pulses
+      if (!bubbleIntervalRef.current) {
+        bubbleIntervalRef.current = setInterval(() => {
+          if (ctx.state === 'suspended') {
+            ctx.resume();
+          }
+
+          // Create brief pop sounds (sine wave with rapid downward sweep)
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          const now = ctx.currentTime;
+          const randomPitch = 150 + Math.random() * 250;
+          osc.frequency.setValueAtTime(randomPitch, now);
+          osc.frequency.exponentialRampToValueAtTime(40, now + 0.08); // rapid drop
+
+          gain.gain.setValueAtTime(0.015, now);
+          gain.gain.linearRampToValueAtTime(0.0001, now + 0.08); // rapid fade
+
+          osc.start(now);
+          osc.stop(now + 0.08);
+        }, 120); // bubble frequency pulse
+      }
+
+    } catch (e) {
+      console.warn("Boiling audio synthesis failed:", e);
+    }
+
+    return () => {
+      if (bubbleIntervalRef.current) {
+        clearInterval(bubbleIntervalRef.current);
+        bubbleIntervalRef.current = null;
+      }
+    };
+  }, [mode, isSimulating, hotTemp, envTemp, soundEnabled]);
+
+  // Clean up audio on unmount
+  useEffect(() => {
+    return () => {
+      if (bubbleIntervalRef.current) {
+        clearInterval(bubbleIntervalRef.current);
+      }
+      if (audioCtxRef.current) {
+        audioCtxRef.current.close();
+      }
+    };
+  }, []);
 
   // Reset
   const resetLab = useCallback(() => {
@@ -221,22 +295,25 @@ export default function ThermoLab() {
 
   const equilibriumTemp = useMemo(() => ((90 + 10) / 2).toFixed(1), []);
 
-  const handleComplete = useCallback((lessonId) => {
-    addXp(45);
-    completeLesson(lessonId, null);
-    navigate('/');
-  }, [addXp, completeLesson, navigate]);
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0B1120] via-[#0F172A] to-[#0B1120] text-white">
       {/* Header */}
       <header className="sticky top-0 z-30 flex items-center justify-between px-4 py-3 bg-[#0F172A]/90 backdrop-blur-md border-b border-white/10">
-        <button onClick={() => navigate('/')} className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
-          <ArrowLeft size={20} />
-          <span className="font-bold text-sm hidden sm:inline">Quay lại</span>
-        </button>
+        <div className="flex items-center gap-4">
+          <button onClick={() => navigate('/')} className="flex items-center gap-2 text-slate-300 hover:text-white transition-colors">
+            <ArrowLeft size={20} />
+            <span className="font-bold text-sm hidden sm:inline">Quay lại</span>
+          </button>
+          <button
+            onClick={() => setShowTheory(true)}
+            className="flex items-center gap-1 px-2.5 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-bold text-cyan-400 tracking-wide transition-all"
+          >
+            <BookOpen size={13} />
+            <span>Xem Lý thuyết</span>
+          </button>
+        </div>
         <div className="flex items-center gap-2">
-          <Thermometer size={20} className="text-red-400" />
+          <Thermometer size={20} className="text-red-400 animate-pulse" />
           <h1 className="font-extrabold text-base tracking-tight">Phòng thí nghiệm Nhiệt học</h1>
         </div>
         <button onClick={resetLab} className="flex items-center gap-1.5 text-slate-400 hover:text-white transition-colors">
@@ -333,13 +410,6 @@ export default function ThermoLab() {
                   ))}
                 </div>
               </div>
-
-              <button
-                onClick={() => setShowQuiz(true)}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-extrabold text-sm shadow-lg shadow-amber-500/20 hover:shadow-amber-500/40 transition-shadow"
-              >
-                🧪 Làm bài trắc nghiệm
-              </button>
             </motion.div>
           ) : (
             <motion.div
@@ -442,9 +512,18 @@ export default function ThermoLab() {
                   </button>
                 </div>
               </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
       {/* Floating Quiz Challenge Component */}
       <LabQuizChallenge labId="thermo" />
+
+      {/* Theory Card Modal */}
+      {showTheory && (
+        <TheoryCardModal labId="thermo" onClose={() => setShowTheory(false)} />
+      )}
     </div>
   );
 }
