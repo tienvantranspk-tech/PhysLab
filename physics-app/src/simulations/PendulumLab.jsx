@@ -1,7 +1,9 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Play, RotateCcw, Pause } from 'lucide-react';
+import { X, Play, RotateCcw, Pause, BookOpen } from 'lucide-react';
+import LabQuizChallenge from '../components/LabQuizChallenge';
+import TheoryCardModal from '../components/TheoryCardModal';
 
 const G = 9.8;
 const TWO_PI = Math.PI * 2;
@@ -20,6 +22,7 @@ export default function PendulumLab() {
   const [currentAngle, setCurrentAngle] = useState(30);
   const [angularVel, setAngularVel] = useState(0);
   const [graphData, setGraphData] = useState([]);
+  const [showTheory, setShowTheory] = useState(true);
 
   const period = 2 * Math.PI * Math.sqrt(length / G);
   const frequency = 1 / period;
@@ -97,7 +100,7 @@ export default function PendulumLab() {
 
     const pivotX = w * 0.5;
     const pivotY = 60;
-    const scale = Math.min((h - 120) / 3, 200); // pixels per meter
+    const scale = Math.max(40, Math.min((h - 120) / 3, 200)); // scale is always at least 40px per meter
     const ropeLen = length * scale;
     const angleRad = (currentAngle * Math.PI) / 180;
 
@@ -128,7 +131,7 @@ export default function PendulumLab() {
 
     // Arc showing angle
     if (Math.abs(currentAngle) > 0.5) {
-      const arcR = Math.min(ropeLen * 0.25, 50);
+      const arcR = Math.max(10, Math.min(ropeLen * 0.25, 50)); // Ensure arcR is always at least 10px
       const startA = Math.PI / 2;
       const endA = Math.PI / 2 - angleRad;
       ctx.beginPath();
@@ -300,9 +303,18 @@ export default function PendulumLab() {
     <div className="fixed inset-0 bg-[#0B1120] text-white flex flex-col overflow-hidden">
       {/* Header */}
       <header className="flex items-center justify-between px-4 py-3 bg-[#0F172A]/80 backdrop-blur-md border-b border-white/5 z-20 shrink-0">
-        <button onClick={() => navigate(-1)} className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
-          <X size={18} />
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => navigate(-1)} className="w-9 h-9 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 transition-colors">
+            <X size={18} />
+          </button>
+          <button
+            onClick={() => setShowTheory(true)}
+            className="flex items-center gap-1 px-2.5 py-1 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-xs font-bold text-cyan-400 tracking-wide transition-all"
+          >
+            <BookOpen size={13} />
+            <span>Xem Lý thuyết</span>
+          </button>
+        </div>
         <div className="text-center">
           <h1 className="font-extrabold text-sm tracking-wide">CON LẮC ĐƠN</h1>
           <p className="text-[10px] text-slate-400 font-semibold">Simple Pendulum</p>
@@ -432,6 +444,14 @@ export default function PendulumLab() {
           </div>
         </div>
       </div>
+
+      {/* Floating Quiz Challenge Component */}
+      <LabQuizChallenge labId="pendulum" />
+
+      {/* Theory Card Modal */}
+      {showTheory && (
+        <TheoryCardModal labId="pendulum" onClose={() => setShowTheory(false)} />
+      )}
     </div>
   );
 }
