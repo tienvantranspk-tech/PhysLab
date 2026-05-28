@@ -291,24 +291,8 @@ export default function WaveLab() {
           </div>
         </div>
 
-        <button
-          onClick={() => setShowQuiz(true)}
-          className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-extrabold text-sm shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-shadow"
-        >
-          🧪 Làm bài trắc nghiệm
-        </button>
-      </div>
-
-      {/* Quiz Modal */}
-      <AnimatePresence>
-        {showQuiz && (
-          <LabQuizChallenge
-            lessonId="wave_02"
-            onComplete={(lessonId) => handleComplete(lessonId)}
-            onClose={() => setShowQuiz(false)}
-          />
-        )}
-      </AnimatePresence>
+      {/* Floating Quiz Challenge Component */}
+      <LabQuizChallenge labId="wave" />
     </div>
   );
 }

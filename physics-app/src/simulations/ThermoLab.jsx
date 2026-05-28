@@ -443,27 +443,8 @@ export default function ThermoLab() {
                 </div>
               </div>
 
-              <button
-                onClick={() => setShowQuiz(true)}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-extrabold text-sm shadow-lg shadow-blue-500/20 hover:shadow-blue-500/40 transition-shadow"
-              >
-                🧪 Làm bài trắc nghiệm
-              </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* Quiz Modal */}
-      <AnimatePresence>
-        {showQuiz && (
-          <LabQuizChallenge
-            lessonId={mode === 'thermometer' ? 'thermo_01' : 'thermo_02'}
-            onComplete={(lessonId) => handleComplete(lessonId)}
-            onClose={() => setShowQuiz(false)}
-          />
-        )}
-      </AnimatePresence>
+      {/* Floating Quiz Challenge Component */}
+      <LabQuizChallenge labId="thermo" />
     </div>
   );
 }
