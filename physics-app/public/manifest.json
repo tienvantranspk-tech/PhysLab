@@ -1,0 +1,18 @@
+{
+  "name": "PhysLab — Vật lý tương tác & Thí nghiệm vui",
+  "short_name": "PhysLab",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0B1120",
+  "theme_color": "#F59E0B",
+  "description": "Phòng thí nghiệm vật lý tương tác ảo, kết hợp gamification & phần thưởng cực chất dành cho học sinh THCS.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

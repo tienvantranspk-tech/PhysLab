@@ -1,18 +1,12 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { GlassCard, AnimatedProgressBar, ChunkyButton } from '../components/common';
+import { GlassCard, AnimatedProgressBar } from '../components/common';
 import { staggerContainer, staggerItem } from '../animations/variants';
 import { useUser } from '../context/UserContext';
 import { Gift, Calendar, CheckCircle } from 'lucide-react';
 
-const mockQuests = [
-  { id: 'dq_1', title: 'Hoàn thành 1 bài học', icon: '📚', progress: 0, target: 1, reward: 30 },
-  { id: 'dq_2', title: 'Đạt 100 XP', icon: '⭐', progress: 45, target: 100, reward: 20 },
-  { id: 'dq_3', title: 'Trả lời đúng 5 câu quiz', icon: '✅', progress: 3, target: 5, reward: 25 },
-];
-
 export default function MissionsScreen() {
-  const { streak } = useUser();
+  const { streak, xp, completedLessons } = useUser();
   const today = new Date();
   const days = ['CN','T2','T3','T4','T5','T6','T7'];
   const cal = Array.from({length:7},(_,i)=>{
@@ -20,8 +14,23 @@ export default function MissionsScreen() {
     return {label:days[d.getDay()], day:d.getDate(), done:i<5, isToday:i===6};
   });
 
+  const completedCount = Array.isArray(completedLessons) ? completedLessons.length : 0;
+
+  // Calculate live quests based on safe UserContext states
+  const liveQuests = [
+    { id: 'dq_1', title: 'Mở khóa 3 bài học vật lý', icon: '📚', progress: Math.min(completedCount, 3), target: 3, reward: 30 },
+    { id: 'dq_2', title: 'Tích lũy 500 XP', icon: '⭐', progress: Math.min(xp || 0, 500), target: 500, reward: 50 },
+    { id: 'dq_3', title: 'Duy trì chuỗi học tập (Streak)', icon: '🔥', progress: Math.min(streak || 0, 15), target: 15, reward: 25 },
+  ];
+
   return (
-    <div className="p-5 pb-24 bg-[#0B1120] text-slate-100 min-h-screen">
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -15 }}
+      transition={{ duration: 0.25, ease: 'easeInOut' }}
+      className="p-5 pb-24 bg-[#0B1120] text-slate-100 min-h-screen"
+    >
       <div className="mb-6">
         <h1 className="text-2xl font-extrabold text-white tracking-tight">🎯 Nhiệm vụ</h1>
         <p className="text-slate-400 font-semibold text-xs mt-1">Hoàn thành nhiệm vụ nhận ngay năng lượng!</p>
@@ -54,7 +63,7 @@ export default function MissionsScreen() {
         <Gift size={18} className="text-sky-400" /> Nhiệm vụ hàng ngày
       </h2>
       <motion.div variants={staggerContainer} initial="initial" animate="animate" className="flex flex-col gap-3 mb-6">
-        {mockQuests.map(q => {
+        {liveQuests.map(q => {
           const done = q.progress >= q.target;
           return (
             <motion.div key={q.id} variants={staggerItem}>
@@ -82,10 +91,10 @@ export default function MissionsScreen() {
           <div className="flex-1 min-w-0">
             <h3 className="font-extrabold text-purple-300 text-sm mb-1 truncate">Thử thách tuần</h3>
             <p className="text-purple-400 font-semibold text-xs mb-3">Hoàn thành 5 bài học tuần này → 200 XP + 50 💎</p>
-            <AnimatedProgressBar progress={40} size="sm" color="primary" showLabel />
+            <AnimatedProgressBar progress={Math.min((completedCount/5)*100, 100)} size="sm" color="primary" showLabel />
           </div>
         </div>
       </GlassCard>
-    </div>
+    </motion.div>
   );
 }

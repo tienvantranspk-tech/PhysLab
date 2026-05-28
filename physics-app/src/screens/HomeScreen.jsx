@@ -4,13 +4,18 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useUser } from '../context/UserContext';
 import { BottomSheet, ChunkyButton, GlassCard } from '../components/common';
 import { staggerContainer, staggerItem } from '../animations/variants';
+import GalaxyHub from '../components/GalaxyHub';
 import lessonsData from '../data/lessons.json';
 
 const topicFilters = [
   { id: 'all', label: 'Dải Ngân Hà', icon: '🌌', color: 'from-pink-500 via-purple-500 to-indigo-500', glow: 'rgba(168,85,247,0.4)' },
   { id: 'electricity', label: 'Điện học', icon: '⚡', color: 'from-amber-400 to-yellow-500', glow: 'rgba(251,191,36,0.4)' },
   { id: 'mechanics', label: 'Cơ học', icon: '🔧', color: 'from-sky-400 to-blue-500', glow: 'rgba(56,189,248,0.4)' },
+  { id: 'thermodynamics', label: 'Nhiệt học', icon: '🌡️', color: 'from-red-400 to-rose-500', glow: 'rgba(239,68,68,0.4)' },
+  { id: 'electromagnetism', label: 'Điện từ học', icon: '🧲', color: 'from-pink-400 to-rose-500', glow: 'rgba(244,63,94,0.4)' },
   { id: 'optics', label: 'Quang học', icon: '🌈', color: 'from-purple-400 to-violet-500', glow: 'rgba(168,85,247,0.4)' },
+  { id: 'waves', label: 'Sóng', icon: '🌊', color: 'from-cyan-400 to-teal-500', glow: 'rgba(6,182,212,0.4)' },
+  { id: 'modern_physics', label: 'Vật lý hiện đại', icon: '⚛️', color: 'from-emerald-400 to-green-500', glow: 'rgba(16,185,129,0.4)' },
 ];
 
 const LessonNode = ({ lesson, isLocked, isCurrent, isCompleted, onClick, index }) => {
@@ -71,9 +76,61 @@ export default function HomeScreen() {
   const [activeTopic, setActiveTopic] = useState('all');
   const [selectedLesson, setSelectedLesson] = useState(null);
 
+  // PWA Install prompt state
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+  const [showInstallBanner, setShowInstallBanner] = useState(false);
+
+  // Typewriter effect state
+  const [typedWelcome, setTypedWelcome] = useState('');
+  const welcomeText = "Chào mừng đến với Vũ trụ Vật lý! Hãy click vào các chòm sao để bắt đầu cuộc hành trình khám phá các định luật vật lý thú vị nhé! 🚀";
+
+  useEffect(() => {
+    let charIndex = 0;
+    setTypedWelcome('');
+    const typeTimer = setInterval(() => {
+      if (charIndex >= welcomeText.length) {
+        clearInterval(typeTimer);
+        return;
+      }
+      const nextChar = welcomeText.charAt(charIndex);
+      setTypedWelcome(prev => prev + nextChar);
+      charIndex++;
+    }, 25);
+    return () => clearInterval(typeTimer);
+  }, []);
+
   const lessons = lessonsData.lessons.filter(
     l => activeTopic === 'all' || l.topic === activeTopic
   );
+
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e) => {
+      // Prevent the default browser mini-infobar prompt
+      e.preventDefault();
+      // Store the event so it can be triggered later
+      setDeferredPrompt(e);
+      // Show custom installation banner
+      setShowInstallBanner(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    // Show install prompt
+    deferredPrompt.prompt();
+    // Wait for response
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log(`User response to install prompt: ${outcome}`);
+    // Clear prompt state
+    setDeferredPrompt(null);
+    setShowInstallBanner(false);
+  };
 
   // Starfield background animation
   useEffect(() => {
@@ -145,18 +202,56 @@ export default function HomeScreen() {
   const handleStartLesson = () => {
     if (!selectedLesson) return;
     const simType = selectedLesson.simulation.type;
-    if (simType === 'free_fall') navigate('/lab/freefall');
-    else if (simType === 'pendulum') navigate('/lab/pendulum');
-    else if (simType === 'inclined_plane') navigate('/lab/incline');
-    else if (simType === 'mirror_reflection') navigate('/lab/mirror');
-    else if (simType === 'prism_dispersion') navigate('/lab/prism');
-    else if (simType === 'ohm_law') navigate('/lab/ohm');
-    else navigate(`/simulation/${selectedLesson.id}`);
+
+    // Simulation type → Lab route mapping
+    const routeMap = {
+      // Electricity
+      intro_charge: '/lab/ohm',
+      current_flow: '/lab/ohm',
+      ohm_law: '/lab/ohm',
+      simple_circuit: '/lab/circuit',
+      series_circuit: '/lab/circuit',
+      parallel_circuit: '/lab/circuit',
+      short_circuit: '/lab/circuit',
+      // Mechanics
+      free_fall: '/lab/freefall',
+      pendulum: '/lab/pendulum',
+      inclined_plane: '/lab/incline',
+      newton_laws: '/lab/incline',
+      hooke_law: '/lab/hooke',
+      projectile_motion: '/lab/projectile',
+      collision_momentum: '/lab/collision',
+      archimedes_force: '/lab/archimedes',
+      // Optics
+      mirror_reflection: '/lab/mirror',
+      lens_refraction: '/lab/optics',
+      prism_dispersion: '/lab/prism',
+      young_interference: '/lab/young',
+      // Electromagnetism
+      faraday_magnetic: '/lab/faraday',
+      rlc_circuit: '/lab/rlc',
+      // Waves
+      shm_oscillation: '/lab/shm',
+      wave_generic: '/lab/wave',
+      // Thermodynamics
+      thermo_generic: '/lab/thermo',
+      // Modern Physics
+      nuclear_decay: '/lab/decay',
+    };
+
+    const route = routeMap[simType] || `/simulation/${selectedLesson.id}`;
+    navigate(route);
     setSelectedLesson(null);
   };
 
   return (
-    <div className="relative w-full h-full min-h-screen overflow-hidden flex flex-col">
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -15 }}
+      transition={{ duration: 0.25, ease: 'easeInOut' }}
+      className="relative w-full h-full overflow-hidden flex flex-col"
+    >
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
 
       <div className="relative z-10 flex-1 flex flex-col overflow-y-auto custom-scrollbar pb-24">
@@ -188,53 +283,94 @@ export default function HomeScreen() {
           <motion.div
             animate={{ y: [0, -4, 0] }}
             transition={{ repeat: Infinity, duration: 2.5 }}
-            className="text-4xl filter drop-shadow-md"
+            className="text-4xl filter drop-shadow-md shrink-0 self-start"
           >
             🦉
           </motion.div>
           <div>
-            <p className="text-sm font-bold text-slate-200">Chào mừng đến với Vũ trụ Vật lý!</p>
-            <p className="text-xs font-semibold text-slate-400 mt-0.5 leading-relaxed">
-              Click vào các chòm sao để bắt đầu cuộc hành trình khám phá các định luật vật lý thú vị! 🚀
+            <p className="text-xs font-extrabold text-sky-400 uppercase tracking-widest mb-1">Thầy Cú Thông Thái</p>
+            <p className="text-xs font-semibold text-slate-300 leading-relaxed font-mono min-h-[40px]">
+              {typedWelcome}
             </p>
           </div>
         </motion.div>
 
-        {/* Galaxy Nodes Container */}
-        <div className="flex-1 flex flex-col items-center justify-center relative px-6 py-6 min-h-[400px]">
-          {/* Constellation line background */}
-          <div className="absolute inset-0 flex justify-center pointer-events-none opacity-20">
-            <svg className="w-full h-full max-w-md" viewBox="0 0 100 100" preserveAspectRatio="none">
-              <path d="M50,5 L30,25 L70,45 L35,65 L65,85 L50,95" fill="none" stroke="#38BDF8" strokeWidth="0.8" strokeDasharray="3 3" />
-            </svg>
+        {/* PWA Custom Install Prompt Banner */}
+        <AnimatePresence>
+          {showInstallBanner && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              className="mx-5 mb-3 p-4 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 rounded-3xl flex flex-col md:flex-row items-center gap-4 shadow-2xl relative overflow-hidden"
+            >
+              <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full filter blur-xl pointer-events-none" />
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/20 flex items-center justify-center text-2xl shrink-0 shadow-inner">
+                📲
+              </div>
+              <div className="flex-1 text-center md:text-left">
+                <h4 className="font-extrabold text-sm text-amber-400">Cài đặt Ứng Dụng PhysLab</h4>
+                <p className="text-[11px] font-semibold text-slate-300 mt-1 leading-relaxed">
+                  Tải ngay PhysLab về màn hình chính điện thoại để làm các thí nghiệm mượt mà hơn và hỗ trợ hoàn toàn ngoại tuyến không cần mạng!
+                </p>
+              </div>
+              <div className="flex items-center gap-2.5 w-full md:w-auto justify-center md:justify-end shrink-0">
+                <button
+                  onClick={() => setShowInstallBanner(false)}
+                  className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-400 hover:text-slate-200 font-bold text-xs transition-colors"
+                >
+                  ĐỂ SAU
+                </button>
+                <button
+                  onClick={handleInstallClick}
+                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-slate-950 font-extrabold text-xs shadow-lg shadow-amber-500/15 transition-transform active:scale-95"
+                >
+                  CÀI ĐẶT NGAY
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* Content: Galaxy Hub or Constellation Nodes */}
+        {activeTopic === 'all' ? (
+          <GalaxyHub />
+        ) : (
+          <div className="flex-1 flex flex-col items-center justify-start relative px-6 py-8 pt-4 min-h-[400px]">
+            {/* Constellation line background */}
+            <div className="absolute inset-0 flex justify-center pointer-events-none opacity-20">
+              <svg className="w-full h-full max-w-md" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <path d="M50,5 L30,25 L70,45 L35,65 L65,85 L50,95" fill="none" stroke="#38BDF8" strokeWidth="0.8" strokeDasharray="3 3" />
+              </svg>
+            </div>
+
+            <motion.div
+              variants={staggerContainer}
+              initial="initial"
+              animate="animate"
+              className="w-full max-w-xs flex flex-col items-center relative"
+            >
+              {lessons.map((lesson, i) => {
+                const isCompleted = completedLessons.includes(lesson.id);
+                const isUnlocked = unlockedLessons.includes(lesson.id);
+                const isCurrent = isUnlocked && !isCompleted;
+                const isLocked = !isUnlocked;
+
+                return (
+                  <LessonNode
+                    key={lesson.id}
+                    lesson={lesson}
+                    index={i}
+                    isCompleted={isCompleted}
+                    isCurrent={isCurrent}
+                    isLocked={isLocked}
+                    onClick={() => handleLessonClick(lesson, isLocked)}
+                  />
+                );
+              })}
+            </motion.div>
           </div>
-
-          <motion.div
-            variants={staggerContainer}
-            initial="initial"
-            animate="animate"
-            className="w-full max-w-xs flex flex-col items-center relative"
-          >
-            {lessons.map((lesson, i) => {
-              const isCompleted = completedLessons.includes(lesson.id);
-              const isUnlocked = unlockedLessons.includes(lesson.id);
-              const isCurrent = isUnlocked && !isCompleted;
-              const isLocked = !isUnlocked;
-
-              return (
-                <LessonNode
-                  key={lesson.id}
-                  lesson={lesson}
-                  index={i}
-                  isCompleted={isCompleted}
-                  isCurrent={isCurrent}
-                  isLocked={isLocked}
-                  onClick={() => handleLessonClick(lesson, isLocked)}
-                />
-              );
-            })}
-          </motion.div>
-        </div>
+        )}
       </div>
 
       {/* Lesson Details Sheet */}
@@ -278,6 +414,6 @@ export default function HomeScreen() {
           </div>
         )}
       </BottomSheet>
-    </div>
+    </motion.div>
   );
 }

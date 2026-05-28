@@ -6,20 +6,78 @@ import { useUser } from '../context/UserContext';
 import { Settings, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import gameData from '../data/gameData.json';
+import lessonsData from '../data/lessons.json';
 
 export default function ProfileScreen() {
   const navigate = useNavigate();
   const { username, avatarEmoji, xp, streak, level, levelProgress, completedLessons, unlockedBadges } = useUser();
 
+  const completedCount = Array.isArray(completedLessons) ? completedLessons.length : 0;
+
   const stats = [
     { label: 'Tổng XP', value: xp, icon: '⭐', color: 'text-amber-400' },
     { label: 'Cấp độ', value: level, icon: '🎖️', color: 'text-sky-400' },
     { label: 'Streak', value: `${streak} ngày`, icon: '🔥', color: 'text-orange-400' },
-    { label: 'Bài học', value: completedLessons.length, icon: '📚', color: 'text-emerald-400' },
+    { label: 'Bài học', value: completedCount, icon: '📚', color: 'text-emerald-400' },
   ];
 
+  // Generate live activity logs based on real user progression
+  const liveActivities = [];
+  
+  if (Array.isArray(completedLessons)) {
+    completedLessons.forEach(lessonId => {
+      const lesson = lessonsData?.lessons?.find(l => l.id === lessonId);
+      if (lesson) {
+        liveActivities.push({
+          text: `Hoàn thành bài học "${lesson.title}"`,
+          time: 'Gần đây',
+          icon: '✅'
+        });
+      }
+    });
+  }
+
+  if (Array.isArray(unlockedBadges)) {
+    unlockedBadges.forEach(badgeId => {
+      const badge = gameData?.achievements?.find(a => a.id === badgeId);
+      if (badge) {
+        liveActivities.push({
+          text: `Nhận huy hiệu "${badge.name}"`,
+          time: 'Đã nhận',
+          icon: '🏆'
+        });
+      }
+    });
+  }
+
+  if (streak > 0) {
+    liveActivities.push({
+      text: `Duy trì streak liên tiếp ${streak} ngày!`,
+      time: 'Hôm nay',
+      icon: '🔥'
+    });
+  }
+
+  // Fallback
+  if (liveActivities.length === 0) {
+    liveActivities.push({
+      text: 'Chưa có hoạt động học tập nào. Hãy bắt đầu ngay!',
+      time: 'Bây giờ',
+      icon: '✨'
+    });
+  }
+
+  // Limit to 4 recent activities
+  const displayActivities = liveActivities.slice(0, 4);
+
   return (
-    <div className="p-5 pb-24 bg-[#0B1120] text-slate-100 min-h-screen">
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -15 }}
+      transition={{ duration: 0.25, ease: 'easeInOut' }}
+      className="p-5 pb-24 bg-[#0B1120] text-slate-100 min-h-screen"
+    >
       {/* Profile Header */}
       <GlassCard variant="default" className="mb-6 text-center border-white/5 bg-[#0F172A]/70 shadow-xl relative">
         <div className="absolute top-4 right-4">
@@ -61,7 +119,7 @@ export default function ProfileScreen() {
         <GlassCard variant="default" className="border-white/5 bg-[#0F172A]/70 shadow-xl">
           <div className="grid grid-cols-4 gap-3">
             {gameData.achievements.slice(0, 8).map(a => (
-              <Badge key={a.id} icon={a.icon} label={a.name} unlocked={unlockedBadges.includes(a.id)} size="sm" />
+              <Badge key={a.id} icon={a.icon} label={a.name} unlocked={Array.isArray(unlockedBadges) && unlockedBadges.includes(a.id)} size="sm" />
             ))}
           </div>
           <button className="w-full mt-5 text-center text-action font-extrabold text-xs uppercase tracking-widest flex items-center justify-center gap-1 hover:text-[#38BDF8] transition-colors cursor-pointer">
@@ -74,12 +132,8 @@ export default function ProfileScreen() {
       <div>
         <h2 className="font-extrabold text-slate-300 text-sm mb-4 uppercase tracking-widest">📋 Nhật ký hoạt động</h2>
         <div className="flex flex-col gap-2.5">
-          {[
-            { text: 'Hoàn thành bài học "Dòng điện"', time: '2 giờ trước', icon: '✅' },
-            { text: 'Đạt huy hiệu "Bước đầu tiên"', time: '2 giờ trước', icon: '🏆' },
-            { text: 'Streak đạt mốc 12 ngày!', time: 'Hôm nay', icon: '🔥' },
-          ].map((item, i) => (
-            <div key={i} className="flex items-center gap-3.5 bg-[#0F172A]/60 border border-white/5 rounded-2xl px-4 py-3.5">
+          {displayActivities.map((item, i) => (
+            <div key={i} className="flex items-center gap-3.5 bg-[#0F172A]/60 border border-white/5 rounded-2xl px-4 py-3.5 shadow-sm">
               <span className="text-xl shrink-0">{item.icon}</span>
               <div className="flex-1 min-w-0">
                 <span className="font-bold text-slate-200 text-xs truncate block">{item.text}</span>
@@ -89,6 +143,6 @@ export default function ProfileScreen() {
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

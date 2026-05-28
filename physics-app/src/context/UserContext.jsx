@@ -1,6 +1,36 @@
 import React, { createContext, useState, useContext, useCallback, useEffect } from 'react';
 
-const UserContext = createContext();
+// Default state to prevent crashes if context is accessed outside the provider (e.g. HMR or service worker sync delay)
+const defaultState = {
+  xp: 0,
+  streak: 0,
+  hearts: 5,
+  gems: 0,
+  grade: 7,
+  level: 1,
+  nextLevelXp: 100,
+  currentLevelXp: 0,
+  levelProgress: 0,
+  unlockedLessons: ['elec_01', 'mech_01', 'thermo_01', 'emag_01', 'optic_01', 'wave_01', 'modern_01'],
+  completedLessons: [],
+  unlockedBadges: [],
+  username: 'Học Sinh',
+  avatarEmoji: '🧑‍🔬',
+  soundEnabled: true,
+  hapticEnabled: true,
+  setSoundEnabled: () => {},
+  setHapticEnabled: () => {},
+  setGrade: () => {},
+  addXp: () => {},
+  completeLesson: () => {},
+  loseHeart: () => {},
+  addGems: () => {},
+  spendGems: () => {},
+  unlockBadge: () => {},
+  resetProgress: () => {},
+};
+
+const UserContext = createContext(defaultState);
 
 export const useUser = () => useContext(UserContext);
 
@@ -37,7 +67,7 @@ export const UserProvider = ({ children }) => {
 
   // Progress
   const [unlockedLessons, setUnlockedLessons] = useState(
-    () => loadState('unlockedLessons', ['elec_01', 'elec_02', 'elec_03', 'mech_01', 'optic_01'])
+    () => loadState('unlockedLessons', ['elec_01', 'elec_02', 'elec_03', 'mech_01', 'thermo_01', 'emag_01', 'optic_01', 'wave_01', 'modern_01'])
   );
   const [completedLessons, setCompletedLessons] = useState(
     () => loadState('completedLessons', ['elec_01', 'elec_02'])
@@ -117,7 +147,7 @@ export const UserProvider = ({ children }) => {
     setHearts(5);
     setGems(0);
     setCompletedLessons([]);
-    setUnlockedLessons(['elec_01', 'mech_01', 'optic_01']);
+    setUnlockedLessons(['elec_01', 'mech_01', 'thermo_01', 'emag_01', 'optic_01', 'wave_01', 'modern_01']);
     setUnlockedBadges([]);
   }, []);
 

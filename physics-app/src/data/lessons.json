@@ -273,6 +273,206 @@
         }
       ],
       "prerequisites": ["mech_03"],
+      "unlocks": ["mech_05"]
+    },
+    {
+      "id": "mech_05",
+      "title": "Định luật Hooke (Đàn hồi)",
+      "topic": "mechanics",
+      "grade": 10,
+      "order": 5,
+      "xpReward": 50,
+      "description": "Khám phá mối liên hệ tỉ lệ thuận giữa lực tác dụng và độ giãn lò xo!",
+      "thumbnail": "➰",
+      "simulation": {
+        "type": "hooke_law",
+        "components": ["spring", "weights"],
+        "successCondition": "measure_elongation"
+      },
+      "quiz": [
+        {
+          "question": "Theo Định luật Hooke, lực đàn hồi của lò xo tỷ lệ thuận với:",
+          "options": ["Khối lượng quả nặng", "Độ biến dạng lò xo", "Chiều dài tự nhiên", "Thời gian treo"],
+          "correctIndex": 1,
+          "explanation": "F = k * x. Lực đàn hồi tỷ lệ thuận với độ biến dạng x của lò xo."
+        }
+      ],
+      "prerequisites": ["mech_04"],
+      "unlocks": ["mech_06"]
+    },
+    {
+      "id": "mech_06",
+      "title": "Chuyển động ném ngang",
+      "topic": "mechanics",
+      "grade": 10,
+      "order": 6,
+      "xpReward": 60,
+      "description": "Thí nghiệm bắn pháo hoặc ném vật để tìm hiểu quỹ đạo parabol của chuyển động ném!",
+      "thumbnail": "🎯",
+      "simulation": {
+        "type": "projectile_motion",
+        "components": ["cannon", "target"],
+        "successCondition": "hit_target"
+      },
+      "quiz": [
+        {
+          "question": "Quỹ đạo của chuyển động ném ngang có dạng đường gì?",
+          "options": ["Đường thẳng", "Đường tròn", "Đường parabol", "Đường hyperbol"],
+          "correctIndex": 2,
+          "explanation": "Quỹ đạo chuyển động ném ngang hoặc ném xiên luôn có dạng đường parabol trong trọng trường."
+        }
+      ],
+      "prerequisites": ["mech_05"],
+      "unlocks": ["mech_07"]
+    },
+    {
+      "id": "mech_07",
+      "title": "Va chạm & Động lượng",
+      "topic": "mechanics",
+      "grade": 10,
+      "order": 7,
+      "xpReward": 60,
+      "description": "Thí nghiệm va chạm đàn hồi và mềm giữa 2 xe đẩy để tìm hiểu Định luật bảo toàn động lượng!",
+      "thumbnail": "💥",
+      "simulation": {
+        "type": "collision_momentum",
+        "components": ["cart_1", "cart_2"],
+        "successCondition": "observe_collision"
+      },
+      "quiz": [
+        {
+          "question": "Trong va chạm hoàn toàn mềm (dính vào nhau), đại lượng nào sau đây được bảo toàn?",
+          "options": ["Động lượng", "Động năng", "Cả động lượng và động năng", "Không đại lượng nào"],
+          "correctIndex": 0,
+          "explanation": "Trong mọi va chạm hệ cô lập, động lượng luôn được bảo toàn. Động năng chỉ được bảo toàn trong va chạm đàn hồi."
+        }
+      ],
+      "prerequisites": ["mech_06"],
+      "unlocks": ["mech_08"]
+    },
+    {
+      "id": "mech_08",
+      "title": "Lực đẩy Archimedes",
+      "topic": "mechanics",
+      "grade": 8,
+      "order": 8,
+      "xpReward": 50,
+      "description": "Thả vật chìm hoàn toàn hoặc nổi trên nước để tìm hiểu về lực đẩy kì diệu này!",
+      "thumbnail": "🛁",
+      "simulation": {
+        "type": "archimedes_force",
+        "components": ["beaker", "floating_block"],
+        "successCondition": "observe_buoyancy"
+      },
+      "quiz": [
+        {
+          "question": "Lực đẩy Archimedes phụ thuộc vào các yếu tố nào?",
+          "options": ["Khối lượng của vật", "Trọng lượng riêng chất lỏng và thể tích phần chất lỏng bị vật chiếm chỗ", "Hình dạng vật"],
+          "correctIndex": 1,
+          "explanation": "F_A = d * V. Phụ thuộc vào trọng lượng riêng của chất lỏng d và thể tích phần chất lỏng bị chiếm chỗ V."
+        }
+      ],
+      "prerequisites": ["mech_07"],
+      "unlocks": []
+    },
+    {
+      "id": "thermo_01",
+      "title": "Nhiệt độ & Nhiệt kế",
+      "topic": "thermodynamics",
+      "grade": 6,
+      "order": 1,
+      "xpReward": 40,
+      "description": "Khám phá cấu tạo nhiệt kế và thang nhiệt độ Celsius phổ biến!",
+      "thumbnail": "🌡️",
+      "simulation": {
+        "type": "thermo_generic",
+        "components": [],
+        "successCondition": "read_temperature"
+      },
+      "quiz": [
+        {
+          "question": "Nhiệt độ sôi của nước ở áp suất tiêu chuẩn là bao nhiêu độ Celsius?",
+          "options": ["0°C", "37°C", "100°C", "273°C"],
+          "correctIndex": 2,
+          "explanation": "Ở áp suất tiêu chuẩn, nước đá tan ở 0°C và nước sôi ở 100°C."
+        }
+      ],
+      "prerequisites": [],
+      "unlocks": ["thermo_02"]
+    },
+    {
+      "id": "thermo_02",
+      "title": "Cân bằng nhiệt",
+      "topic": "thermodynamics",
+      "grade": 8,
+      "order": 2,
+      "xpReward": 45,
+      "description": "Nhiệt truyền từ vật nóng sang vật lạnh như thế nào để đạt trạng thái cân bằng nhiệt?",
+      "thumbnail": "☕",
+      "simulation": {
+        "type": "thermo_generic",
+        "components": [],
+        "successCondition": "reach_equilibrium"
+      },
+      "quiz": [
+        {
+          "question": "Quá trình truyền nhiệt giữa hai vật dừng lại khi nào?",
+          "options": ["Khi hết nhiệt năng", "Khi hai vật đạt cùng nhiệt độ", "Khi vật lạnh hơn ấm lên"],
+          "correctIndex": 1,
+          "explanation": "Sự truyền nhiệt luôn xảy ra từ vật có nhiệt độ cao hơn sang vật có nhiệt độ thấp hơn và dừng lại khi hai vật đạt cân bằng nhiệt (cùng nhiệt độ)."
+        }
+      ],
+      "prerequisites": ["thermo_01"],
+      "unlocks": []
+    },
+    {
+      "id": "emag_01",
+      "title": "Dòng điện & Từ trường",
+      "topic": "electromagnetism",
+      "grade": 9,
+      "order": 1,
+      "xpReward": 50,
+      "description": "Quan sát từ phổ của dòng điện chạy trong dây dẫn thẳng và cuộn dây!",
+      "thumbnail": "🧲",
+      "simulation": {
+        "type": "faraday_magnetic",
+        "components": ["coil", "compass"],
+        "successCondition": "observe_field_lines"
+      },
+      "quiz": [
+        {
+          "question": "Khi tăng cường độ dòng điện qua cuộn dây, từ trường của nó sẽ:",
+          "options": ["Yếu đi", "Mạnh lên", "Không đổi", "Biến mất"],
+          "correctIndex": 1,
+          "explanation": "Từ trường sinh ra bởi dòng điện tỉ lệ thuận với cường độ dòng điện chạy qua cuộn dây."
+        }
+      ],
+      "prerequisites": [],
+      "unlocks": ["emag_02"]
+    },
+    {
+      "id": "emag_02",
+      "title": "Mạch RLC xoay chiều",
+      "topic": "electromagnetism",
+      "grade": 12,
+      "order": 2,
+      "xpReward": 60,
+      "description": "Khám phá dao động xoay chiều qua mạch chứa Điện trở R, Cuộn cảm L và Tụ điện C!",
+      "thumbnail": "🎛️",
+      "simulation": {
+        "type": "rlc_circuit",
+        "components": ["resistor", "inductor", "capacitor"],
+        "successCondition": "achieve_resonance"
+      },
+      "quiz": [
+        {
+          "question": "Hiện tượng cộng hưởng điện xảy ra trong mạch RLC nối tiếp khi:",
+          "options": ["Z_L > Z_C", "Z_L < Z_C", "Z_L = Z_C", "Điện trở R = 0"],
+          "correctIndex": 2,
+          "explanation": "Cộng hưởng điện xảy ra khi cảm kháng bằng dung kháng (Z_L = Z_C), lúc này cường độ dòng điện hiệu dụng trong mạch đạt cực đại."
+        }
+      ],
+      "prerequisites": ["emag_01"],
       "unlocks": []
     },
     {
@@ -348,12 +548,116 @@
         }
       ],
       "prerequisites": ["optic_02"],
+      "unlocks": ["optic_04"]
+    },
+    {
+      "id": "optic_04",
+      "title": "Khe Young & Giao thoa",
+      "topic": "optics",
+      "grade": 12,
+      "order": 4,
+      "xpReward": 65,
+      "description": "Thí nghiệm giao thoa ánh sáng để chứng minh tính chất sóng của ánh sáng!",
+      "thumbnail": "🦓",
+      "simulation": {
+        "type": "young_interference",
+        "components": ["double_slit", "laser"],
+        "successCondition": "observe_interference_fringes"
+      },
+      "quiz": [
+        {
+          "question": "Hiện tượng giao thoa ánh sáng chứng tỏ ánh sáng có tính chất gì?",
+          "options": ["Tính chất hạt", "Tính chất sóng", "Tính chất từ", "Tính chất hóa học"],
+          "correctIndex": 1,
+          "explanation": "Giao thoa là hiện tượng đặc trưng của sóng. Hiện tượng này chứng minh ánh sáng có tính chất sóng."
+        }
+      ],
+      "prerequisites": ["optic_03"],
+      "unlocks": []
+    },
+    {
+      "id": "wave_01",
+      "title": "Dao động điều hòa (SHM)",
+      "topic": "waves",
+      "grade": 12,
+      "order": 1,
+      "xpReward": 55,
+      "description": "Quan sát đồ thị hình sin của dao động điều hòa điều khiển bởi lò xo và quả nặng!",
+      "thumbnail": "📈",
+      "simulation": {
+        "type": "shm_oscillation",
+        "components": ["spring_shm"],
+        "successCondition": "plot_sine_wave"
+      },
+      "quiz": [
+        {
+          "question": "Trong dao động điều hòa của con lắc lò xo nằm ngang, lực kéo về tỉ lệ với đại lượng nào?",
+          "options": ["Vận tốc", "Gia tốc", "Li độ nhưng ngược dấu", "Khối lượng"],
+          "correctIndex": 2,
+          "explanation": "F = -k * x. Lực kéo về luôn tỉ lệ thuận với li độ x và hướng về vị trí cân bằng (ngược dấu với x)."
+        }
+      ],
+      "prerequisites": [],
+      "unlocks": ["wave_02"]
+    },
+    {
+      "id": "wave_02",
+      "title": "Sóng âm thanh",
+      "topic": "waves",
+      "grade": 7,
+      "order": 2,
+      "xpReward": 45,
+      "description": "Sóng âm truyền qua các môi trường rắn, lỏng, khí và tai chúng ta nghe thấy như thế nào?",
+      "thumbnail": "🔊",
+      "simulation": {
+        "type": "wave_generic",
+        "components": [],
+        "successCondition": "observe_sound"
+      },
+      "quiz": [
+        {
+          "question": "Sóng âm KHÔNG THỂ truyền qua môi trường nào?",
+          "options": ["Chất rắn", "Chất lỏng", "Chất khí", "Chân không"],
+          "correctIndex": 3,
+          "explanation": "Sóng âm là sóng cơ học, cần các phần tử vật chất để lan truyền lực nên không thể truyền qua chân không."
+        }
+      ],
+      "prerequisites": ["wave_01"],
+      "unlocks": []
+    },
+    {
+      "id": "modern_01",
+      "title": "Phân rã hạt nhân",
+      "topic": "modern_physics",
+      "grade": 12,
+      "order": 1,
+      "xpReward": 60,
+      "description": "Quan sát hiện tượng phân rã phóng xạ tự nhiên của các nguyên tố phóng xạ theo chu kỳ bán rã!",
+      "thumbnail": "☢️",
+      "simulation": {
+        "type": "nuclear_decay",
+        "components": ["isotopes", "geiger_counter"],
+        "successCondition": "measure_half_life"
+      },
+      "quiz": [
+        {
+          "question": "Chu kỳ bán rã là khoảng thời gian để số hạt nhân phóng xạ còn lại:",
+          "options": ["1/4 số hạt ban đầu", "1/2 số hạt ban đầu", "Biến đổi hoàn toàn", "Tăng gấp đôi"],
+          "correctIndex": 1,
+          "explanation": "Chu kỳ bán rã T là thời gian cần thiết để một nửa số hạt nhân phóng xạ của chất đó phân rã biến đổi thành chất khác."
+        }
+      ],
+      "prerequisites": [],
       "unlocks": []
     }
   ],
   "topics": [
     { "id": "electricity", "name": "Điện học", "icon": "⚡", "color": "#F59E0B", "grades": [7, 9] },
-    { "id": "mechanics", "name": "Cơ học", "icon": "🔧", "color": "#38BDF8", "grades": [8, 9] },
-    { "id": "optics", "name": "Quang học", "icon": "🔬", "color": "#A855F7", "grades": [7, 9] }
+    { "id": "mechanics", "name": "Cơ học", "icon": "🔧", "color": "#38BDF8", "grades": [8, 10] },
+    { "id": "thermodynamics", "name": "Nhiệt học", "icon": "🌡️", "color": "#EF4444", "grades": [6, 8] },
+    { "id": "electromagnetism", "name": "Điện từ học", "icon": "🧲", "color": "#F43F5E", "grades": [9, 11, 12] },
+    { "id": "optics", "name": "Quang học", "icon": "🔬", "color": "#A855F7", "grades": [7, 9, 12] },
+    { "id": "waves", "name": "Dao động & Sóng", "icon": "🌊", "color": "#06B6D4", "grades": [7, 12] },
+    { "id": "modern_physics", "name": "Vật lý hiện đại", "icon": "⚛️", "color": "#10B981", "grades": [12] }
   ]
 }

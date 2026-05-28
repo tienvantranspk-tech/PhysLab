@@ -15,12 +15,12 @@ export default function MainLayout() {
   const { xp, streak, gems } = useUser();
 
   return (
-    <div className="flex min-h-screen bg-[#0B1120] text-white">
+    <div className="flex h-screen bg-[#0B1120] text-white overflow-hidden">
       {/* Desktop Sidebar */}
       <Sidebar />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-h-screen max-w-2xl mx-auto w-full lg:max-w-none">
+      <div className="flex-1 flex flex-col h-screen max-w-2xl mx-auto w-full lg:max-w-none overflow-hidden">
         
         {/* Top Header Bar (stats) */}
         <header className="flex items-center justify-between px-4 py-3 bg-[#0F172A]/80 backdrop-blur-md z-20 border-b border-white/5 shrink-0 sticky top-0">
@@ -32,23 +32,38 @@ export default function MainLayout() {
           </div>
 
           {/* Center / Stats */}
-          <div className="flex items-center gap-4 lg:gap-6">
+          <div className="flex items-center gap-2 lg:gap-3.5">
             {/* Streak */}
-            <div className="flex items-center gap-1.5 font-extrabold text-orange-500">
-              <Flame size={22} fill="currentColor" />
-              <span className="text-sm">{streak}</span>
+            <div className="flex items-center gap-1.5 font-extrabold text-orange-500 bg-orange-500/10 px-2.5 py-1 rounded-full border border-orange-500/20 shadow-[0_0_15px_rgba(249,115,22,0.15)] relative overflow-hidden group">
+              <motion.div
+                animate={{ scale: [1, 1.15, 1], filter: ["drop-shadow(0 0 2px #F97316)", "drop-shadow(0 0 8px #EA580C)", "drop-shadow(0 0 2px #F97316)"] }}
+                transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
+              >
+                <Flame size={18} fill="currentColor" />
+              </motion.div>
+              <span className="text-xs">{streak}</span>
             </div>
 
             {/* XP */}
-            <div className="flex items-center gap-1.5 font-extrabold text-amber-500">
-              <Star size={22} fill="currentColor" />
-              <span className="text-sm">{xp}</span>
+            <div className="flex items-center gap-1.5 font-extrabold text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.15)]">
+              <motion.div
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
+              >
+                <Star size={16} fill="currentColor" />
+              </motion.div>
+              <span className="text-xs">{xp}</span>
             </div>
 
             {/* Gems */}
-            <div className="flex items-center gap-1.5 font-extrabold text-sky-500">
-              <Diamond size={20} fill="currentColor" />
-              <span className="text-sm">{gems || 0}</span>
+            <div className="flex items-center gap-1.5 font-extrabold text-sky-500 bg-sky-500/10 px-2.5 py-1 rounded-full border border-sky-500/20 shadow-[0_0_15px_rgba(56,189,248,0.15)]">
+              <motion.div
+                animate={{ y: [0, -2, 0] }}
+                transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+              >
+                <Diamond size={15} fill="currentColor" />
+              </motion.div>
+              <span className="text-xs">{gems || 0}</span>
             </div>
           </div>
 
